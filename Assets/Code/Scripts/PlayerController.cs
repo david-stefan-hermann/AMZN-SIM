@@ -28,6 +28,13 @@ public class PlayerController : MonoBehaviour
                         heldObject = hit.collider.gameObject;
                         heldObject.transform.position = holdPosition.position;
                         heldObject.transform.parent = holdPosition;
+
+                        // Enable physics (Rigidbody) when picked up
+                        PackageBox package = heldObject.GetComponent<PackageBox>();
+                        if (package != null)
+                        {
+                            package.Pickup();
+                        }
                     }
                 }
             }
