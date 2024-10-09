@@ -3,57 +3,73 @@ using UnityEngine;
 public class ConveyorBelt : MonoBehaviour
 {
     public GameObject packagePrefab; // Reference to the package prefab
+    public Transform spawnStart; // Start point for spawning packages
+    public Transform spawnEnd; // End point for despawning packages
     public float beltSpeed = 2f; // Speed of the conveyor belt
-    public float spawnInterval = 2f; // Time between spawns
-    public float destroyXThreshold = 10f; // Packages are destroyed if their x value exceeds this
+    public float minSpawnInterval = 1f; // Minimum time between spawns
+    public float maxSpawnInterval = 3f; // Maximum time between spawns
 
-    public Transform spawnPoint; // Where packages spawn
-    public Material normalMaterial;
-    public Material damagedMaterial;
+    private float _nextSpawnTime;
 
-    private float nextSpawnTime;
+    private void Start()
+    {
+        ScheduleNextSpawn();
+    }
 
-    void Update()
+    private void Update()
     {
         MovePackages();
 
-        if (Time.time >= nextSpawnTime)
-        {
-            SpawnPackage();
-            nextSpawnTime = Time.time + spawnInterval;
-        }
+        if (!(Time.time >= _nextSpawnTime)) return;
+        SpawnPackage();
+        ScheduleNextSpawn();
     }
 
-    void MovePackages()
+
+    private void MovePackages()
     {
         // Move all child objects (packages) of the conveyor belt
         foreach (Transform child in transform)
         {
-            child.Translate(Vector3.right * beltSpeed * Time.deltaTime);
+            if (!child.CompareTag("Package")) continue;
+            
+            // Keep the y position constant
+            var targetPosition = new Vector3(spawnEnd.position.x, child.position.y, spawnEnd.position.z);
+            child.position = Vector3.MoveTowards(child.position, targetPosition, beltSpeed * Time.deltaTime);
 
-            // Destroy the package if it exceeds the x threshold
-            if (child.position.x > destroyXThreshold)
+            // Destroy the package if it reaches the end point
+            if (Vector3.Distance(child.position, targetPosition) < 0.1f)
             {
                 Destroy(child.gameObject);
             }
         }
     }
 
-    void SpawnPackage()
+    private void SpawnPackage()
     {
-        GameObject newPackage = Instantiate(packagePrefab, spawnPoint.position, Quaternion.identity);
+        var newPackage = Instantiate(packagePrefab, spawnStart.position, Quaternion.identity);
         newPackage.transform.parent = transform; // Attach to the conveyor belt
+        newPackage.tag = "Package"; // Set the tag to "Package"
 
         // Randomize size
-        float randomScale = Random.Range(0.8f, 1.2f);
+        var randomScale = Random.Range(0.8f, 1.2f);
         newPackage.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
 
-        // Randomly determine if the package is damaged
-        PackageBox packageScript = newPackage.GetComponent<PackageBox>();
-        packageScript.isDamaged = Random.value > 0.8f; // 20% chance of being damaged
+        // Randomize rotation along the y-axis
+        var randomYRotation = Random.Range(0f, 360f);
+        newPackage.transform.rotation = Quaternion.Euler(0f, randomYRotation, 0f);
 
-        // Set material based on whether the package is damaged
-        Renderer packageRenderer = newPackage.GetComponent<Renderer>();
-        packageRenderer.material = packageScript.isDamaged ? damagedMaterial : normalMaterial;
+        // Adjust the y position to align the bottom of the package with the spawn point
+        var packageHeight = newPackage.GetComponent<Renderer>().bounds.size.y;
+        newPackage.transform.position = new Vector3(
+            spawnStart.position.x,
+            spawnStart.position.y + packageHeight / 2,
+            spawnStart.position.z
+        );
+    }
+
+    private void ScheduleNextSpawn()
+    {
+        _nextSpawnTime = Time.time + Random.Range(minSpawnInterval, maxSpawnInterval);
     }
 }
