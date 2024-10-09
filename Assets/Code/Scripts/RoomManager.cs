@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class RoomManager : MonoBehaviour
+namespace Code.Scripts
 {
-    public bool isWorking = false;
-
-    private void OnTriggerEnter(Collider other)
+    public class RoomManager : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        public bool isWorking = false;
+
+        private void OnTriggerEnter(Collider other)
         {
-            if (this.gameObject.name == "HomeTrigger")
+            if (other.CompareTag("Player"))
             {
-                isWorking = false;
-                Debug.Log("Player is home, not working.");
-            }
-            else if (this.gameObject.name == "WorkTrigger")
-            {
-                isWorking = true;
-                Debug.Log("Player is now working.");
+                if (this.gameObject.name == "HomeTrigger")
+                {
+                    isWorking = false;
+                    Debug.Log("Player is home, not working.");
+                }
+                else if (this.gameObject.name == "WorkTrigger")
+                {
+                    isWorking = true;
+                    Debug.Log("Player is now working.");
+                }
             }
         }
     }

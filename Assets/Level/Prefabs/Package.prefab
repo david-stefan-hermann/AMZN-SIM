@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.37, y: 3.85, z: 1.6187303}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -123,6 +123,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDamaged: 0
+  damagedMaterial: {fileID: 2100000, guid: d1f80b88deb0b2344ae4648270ae2b57, type: 2}
+  normalMaterial: {fileID: 2100000, guid: 547cfa52c66bce2458beac6eda84a54e, type: 2}
+  destroyTime: 20
 --- !u!54 &3508771544717591552
 Rigidbody:
   m_ObjectHideFlags: 0

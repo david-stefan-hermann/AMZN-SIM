@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class HomePC : MonoBehaviour
+namespace Code.Scripts
 {
-    public GameObject[] decorations;
-    public Transform[] decorationPositions;
-    private int decorationIndex = 0;
-
-    public void PurchaseDecoration()
+    public class HomePC : MonoBehaviour
     {
-        if (decorationIndex < decorations.Length)
+        public GameObject[] decorations;
+        public Transform[] decorationPositions;
+        private int decorationIndex = 0;
+
+        public void PurchaseDecoration()
         {
-            Instantiate(decorations[decorationIndex], decorationPositions[decorationIndex].position, Quaternion.identity);
-            decorationIndex++;
-        }
-        else
-        {
-            Debug.Log("No more decorations available.");
+            if (decorationIndex < decorations.Length)
+            {
+                Instantiate(decorations[decorationIndex], decorationPositions[decorationIndex].position, Quaternion.identity);
+                decorationIndex++;
+            }
+            else
+            {
+                Debug.Log("No more decorations available.");
+            }
         }
     }
 }

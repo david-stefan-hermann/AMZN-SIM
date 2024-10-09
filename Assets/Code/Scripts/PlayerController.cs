@@ -1,49 +1,99 @@
+using TMPro;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+namespace Code.Scripts
 {
-    public float moveSpeed = 5f;
-    public Transform holdPosition;
-    private GameObject heldObject;
-
-    void Update()
+    public class PlayerController : MonoBehaviour
     {
-        // Player movement
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-        Vector3 move = new Vector3(moveX, 0, moveZ) * moveSpeed * Time.deltaTime;
-        transform.Translate(move, Space.World);
+        public float interactDistance = 3f; // Distance within which the player can interact with packages
+        public TextMeshProUGUI tooltipText; // Reference to the TextMeshProUGUI element for the tooltip
+        public Transform carryPosition; // Position in front of the player where the package will be carried
+        public float throwForce = 10f; // Force with which the package is thrown
 
-        // Pickup and drop mechanics
-        if (Input.GetKeyDown(KeyCode.E))
+        private PackageBox _carriedPackage;
+
+        private void Update()
         {
-            if (heldObject == null)
+            if (!_carriedPackage)
             {
-                // Pickup object
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit, 2f))
-                {
-                    if (hit.collider.CompareTag("Package"))
-                    {
-                        heldObject = hit.collider.gameObject;
-                        heldObject.transform.position = holdPosition.position;
-                        heldObject.transform.parent = holdPosition;
-
-                        // Enable physics (Rigidbody) when picked up
-                        PackageBox package = heldObject.GetComponent<PackageBox>();
-                        if (package != null)
-                        {
-                            package.Pickup();
-                        }
-                    }
-                }
+                CheckForPackage();
             }
             else
             {
-                // Drop object
-                heldObject.transform.parent = null;
-                heldObject = null;
+                CarryPackage();
             }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (!_carriedPackage)
+                {
+                    TryPickupPackage();
+                }
+                else
+                {
+                    ReleasePackage();
+                }
+            }
+        }
+
+        private void CheckForPackage()
+        {
+            if (Camera.main)
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+                {
+                    PackageBox package = hit.transform.GetComponent<PackageBox>();
+                    if (package)
+                    {
+                        tooltipText.text = "E to pick up";
+                        tooltipText.enabled = true;
+                    }
+                    else
+                    {
+                        tooltipText.enabled = false;
+                    }
+                }
+                else
+                {
+                    tooltipText.enabled = false;
+                }
+            }
+        }
+
+        private void TryPickupPackage()
+        {
+            if (Camera.main)
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+                {
+                    PackageBox package = hit.transform.GetComponent<PackageBox>();
+                    if (package)
+                    {
+                        _carriedPackage = package;
+                        _carriedPackage.Pickup();
+                        _carriedPackage.transform.SetParent(carryPosition);
+                        _carriedPackage.transform.localPosition = Vector3.zero;
+                        _carriedPackage.GetComponent<Rigidbody>().isKinematic = true;
+                        tooltipText.enabled = false;
+                    }
+                }
+            }
+        }
+
+        private void CarryPackage()
+        {
+            _carriedPackage.transform.position = carryPosition.position;
+        }
+
+        private void ReleasePackage()
+        {
+            _carriedPackage.transform.SetParent(null);
+            Rigidbody rb = _carriedPackage.GetComponent<Rigidbody>();
+            rb.isKinematic = false;
+            if (Camera.main) rb.AddForce(Camera.main.transform.forward * throwForce, ForceMode.VelocityChange);
+            _carriedPackage = null;
         }
     }
 }

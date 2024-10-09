@@ -1,37 +1,40 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-public class Overseer : MonoBehaviour
+namespace Code.Scripts
 {
-    public Transform player;
-    public float whipCooldown = 10f;
-    private bool canWhip = true;
-
-    void Update()
+    public class Overseer : MonoBehaviour
     {
-        if (canWhip && PlayerMissedPackage()) 
+        public Transform player;
+        public float whipCooldown = 10f;
+        private bool canWhip = true;
+
+        void Update()
         {
-            WhipPlayer();
-            StartCoroutine(WhipCooldown());
+            if (canWhip && PlayerMissedPackage()) 
+            {
+                WhipPlayer();
+                StartCoroutine(WhipCooldown());
+            }
         }
-    }
 
-    bool PlayerMissedPackage()
-    {
-        // Logic to detect if a damaged package is missed by the player
-        return Random.value > 0.9f;  // Example placeholder logic
-    }
+        bool PlayerMissedPackage()
+        {
+            // Logic to detect if a damaged package is missed by the player
+            return Random.value > 0.9f;  // Example placeholder logic
+        }
 
-    void WhipPlayer()
-    {
-        // Trigger animation or damage player health
-        Debug.Log("Player whipped!");
-    }
+        void WhipPlayer()
+        {
+            // Trigger animation or damage player health
+            Debug.Log("Player whipped!");
+        }
 
-    IEnumerator WhipCooldown()
-    {
-        canWhip = false;
-        yield return new WaitForSeconds(whipCooldown);
-        canWhip = true;
+        IEnumerator WhipCooldown()
+        {
+            canWhip = false;
+            yield return new WaitForSeconds(whipCooldown);
+            canWhip = true;
+        }
     }
 }

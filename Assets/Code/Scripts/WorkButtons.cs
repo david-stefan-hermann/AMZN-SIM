@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class WorkButtons : MonoBehaviour
+namespace Code.Scripts
 {
-    public RoomManager roomManager;
-
-    public void StartWork()
+    public class WorkButtons : MonoBehaviour
     {
-        roomManager.isWorking = true;
-        Debug.Log("Work started.");
-    }
+        public RoomManager roomManager;
 
-    public void StopWork()
-    {
-        roomManager.isWorking = false;
-        Debug.Log("Work stopped.");
+        public void StartWork()
+        {
+            roomManager.isWorking = true;
+            Debug.Log("Work started.");
+        }
+
+        public void StopWork()
+        {
+            roomManager.isWorking = false;
+            Debug.Log("Work stopped.");
+        }
     }
 }
