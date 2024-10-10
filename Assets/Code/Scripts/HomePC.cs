@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using StarterAssets;
 using UnityEngine;
 
@@ -65,14 +66,31 @@ namespace Code.Scripts
 
         private void PopulateDecorationList()
         {
+            // Populate the UI list with decoration items
             foreach (Transform decoration in decorationsHolder)
             {
-                var decorationItem = decoration.GetComponent<DecorationItem>();
-                if (decorationItem != null)
+                if (decoration != null)
                 {
-                    var button = Instantiate(decorationButtonPrefab, decorationListContent);
-                    var buttonScript = button.GetComponent<DecorationButton>();
-                    buttonScript.Setup(decorationItem, this);
+                    var decorationItem = decoration.GetComponent<DecorationItem>();
+                    if (decorationItem != null)
+                    {
+                        var button = Instantiate(decorationButtonPrefab, decorationListContent);
+                        var buttonScript = button.GetComponent<DecorationButton>();
+                        buttonScript.Setup(decorationItem, this);
+                    }
+                }
+            }
+        }
+
+        private void UpdateDecorationButton(DecorationItem item)
+        {
+            foreach (Transform child in decorationListContent)
+            {
+                var buttonScript = child.GetComponent<DecorationButton>();
+                if (buttonScript != null && buttonScript.GetDecorationItem() == item)
+                {
+                    buttonScript.Setup(item, this);
+                    break;
                 }
             }
         }
@@ -85,7 +103,7 @@ namespace Code.Scripts
                 item.isOwned = true;
                 item.gameObject.SetActive(true);
                 GameController.Instance.UpdateMoneyText();
-                PopulateDecorationList(); // Refresh the list to update ownership status
+                UpdateDecorationButton(item); // Update only the purchased item
             }
             else
             {
@@ -93,11 +111,15 @@ namespace Code.Scripts
             }
         }
 
-        private IEnumerator DisplayInsufficientFundsMessage(DecorationButton buttonScript)
+        private static IEnumerator DisplayInsufficientFundsMessage(DecorationButton buttonScript)
         {
+            if (!buttonScript) yield break;
             buttonScript.ShowInsufficientFunds();
             yield return new WaitForSeconds(3f);
-            buttonScript.HideInsufficientFunds();
+            if (buttonScript) // Check again in case it was destroyed during the wait
+            {
+                buttonScript.HideInsufficientFunds();
+            }
         }
     }
 }

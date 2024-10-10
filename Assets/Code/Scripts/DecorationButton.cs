@@ -23,7 +23,9 @@ namespace Code.Scripts
 
             decorationNameText.text = item.name;
             priceText.text = $"${item.price}";
-
+            
+            insufficientFundsImage.gameObject.SetActive(false);
+            
             if (item.isOwned)
             {
                 buyButton.gameObject.SetActive(false);
@@ -64,6 +66,11 @@ namespace Code.Scripts
         {
             buyButton.gameObject.SetActive(true);
             insufficientFundsImage.gameObject.SetActive(false);
+        }
+        
+        public DecorationItem GetDecorationItem()
+        {
+            return _decorationItem;
         }
     }
 }
