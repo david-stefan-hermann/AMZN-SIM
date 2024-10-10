@@ -34,7 +34,7 @@ namespace Code.Scripts
 
         private void Update()
         {
-            if (uiPanel.activeSelf && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape)))
+            if (uiPanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
             {
                 CloseUI();
             }
