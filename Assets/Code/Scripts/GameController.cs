@@ -43,7 +43,7 @@ namespace Code.Scripts
             UpdateMoneyText();
         }
 
-        private void UpdateMoneyText()
+        public void UpdateMoneyText()
         {
             moneyText.text = $"${playerMoney}";
         }

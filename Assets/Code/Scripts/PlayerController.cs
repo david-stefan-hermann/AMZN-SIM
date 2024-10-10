@@ -7,6 +7,7 @@ namespace Code.Scripts
     {
         public float interactDistance = 3f; // Distance within which the player can interact with packages
         public TextMeshProUGUI tooltipText; // Reference to the TextMeshProUGUI element for the tooltip
+        public TextMeshProUGUI pcTooltipText; // Reference to the TextMeshProUGUI element for the PC tooltip
         public Transform carryPosition; // Position in front of the player where the package will be carried
         public float throwForce = 10f; // Force with which the package is thrown
 
@@ -16,7 +17,7 @@ namespace Code.Scripts
         {
             if (!_carriedPackage)
             {
-                CheckForPackage();
+                CheckForInteraction();
             }
             else
             {
@@ -36,7 +37,7 @@ namespace Code.Scripts
             }
         }
 
-        private void CheckForPackage()
+        private void CheckForInteraction()
         {
             if (Camera.main)
             {
@@ -44,19 +45,33 @@ namespace Code.Scripts
                 if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
                 {
                     PackageBox package = hit.transform.GetComponent<PackageBox>();
+                    HomePC homePC = hit.transform.GetComponent<HomePC>();
+
                     if (package)
                     {
-                        tooltipText.text = "E to pick up";
                         tooltipText.enabled = true;
+                        pcTooltipText.enabled = false;
+                    }
+                    else if (homePC)
+                    {
+                        pcTooltipText.enabled = true;
+                        tooltipText.enabled = false;
+
+                        if (Input.GetKeyDown(KeyCode.E))
+                        {
+                            homePC.OpenUI();
+                        }
                     }
                     else
                     {
                         tooltipText.enabled = false;
+                        pcTooltipText.enabled = false;
                     }
                 }
                 else
                 {
                     tooltipText.enabled = false;
+                    pcTooltipText.enabled = false;
                 }
             }
         }
