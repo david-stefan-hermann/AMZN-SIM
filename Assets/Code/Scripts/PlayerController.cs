@@ -12,6 +12,12 @@ namespace Code.Scripts
         public float throwForce = 10f; // Force with which the package is thrown
 
         private PackageBox _carriedPackage;
+        private Collider _playerCollider;
+
+        private void Start()
+        {
+            _playerCollider = GetComponentInChildren<Collider>();
+        }
 
         private void Update()
         {
@@ -92,6 +98,9 @@ namespace Code.Scripts
                         _carriedPackage.transform.localPosition = Vector3.zero;
                         _carriedPackage.GetComponent<Rigidbody>().isKinematic = true;
                         tooltipText.enabled = false;
+
+                        // Ignore collision between the player and the carried package
+                        Physics.IgnoreCollision(_carriedPackage.GetComponent<Collider>(), _playerCollider, true);
                     }
                 }
             }
@@ -104,6 +113,9 @@ namespace Code.Scripts
 
         private void ReleasePackage()
         {
+            // Re-enable collision between the player and the package
+            Physics.IgnoreCollision(_carriedPackage.GetComponent<Collider>(), _playerCollider, false);
+
             _carriedPackage.Release();
             _carriedPackage.transform.SetParent(null);
             Rigidbody rb = _carriedPackage.GetComponent<Rigidbody>();
