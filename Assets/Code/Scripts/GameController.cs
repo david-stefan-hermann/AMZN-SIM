@@ -10,6 +10,9 @@ namespace Code.Scripts
         public int moneyIncreaseAmount = 10;
         public int moneyDecreaseAmount = 5;
         public TextMeshProUGUI moneyText; // Reference to the TextMeshProUGUI element
+        public AudioClip earnMoneyClip; // Audio clip for earning money
+        public AudioClip loseMoneyClip; // Audio clip for losing money
+        private AudioSource _audioSource; // Audio source to play the clips
 
         private void Awake()
         {
@@ -26,6 +29,7 @@ namespace Code.Scripts
 
         private void Start()
         {
+            _audioSource = GetComponent<AudioSource>();
             UpdateMoneyText();
         }
 
@@ -34,13 +38,23 @@ namespace Code.Scripts
             if (isDamaged)
             {
                 playerMoney -= moneyDecreaseAmount;
+                PlaySound(loseMoneyClip);
             }
             else
             {
                 playerMoney += moneyIncreaseAmount;
+                PlaySound(earnMoneyClip);
             }
 
             UpdateMoneyText();
+        }
+
+        private void PlaySound(AudioClip clip)
+        {
+            if (clip != null)
+            {
+                _audioSource.PlayOneShot(clip);
+            }
         }
 
         public void UpdateMoneyText()

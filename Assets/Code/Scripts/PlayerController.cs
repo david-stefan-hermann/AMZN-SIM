@@ -31,7 +31,7 @@ namespace Code.Scripts
                 CarryPackage();
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
             {
                 if (!_carriedPackage)
                 {
@@ -64,7 +64,7 @@ namespace Code.Scripts
                         pcTooltipText.enabled = true;
                         tooltipText.enabled = false;
 
-                        if (Input.GetKeyDown(KeyCode.E))
+                        if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                         {
                             homePC.OpenUI();
                         }
