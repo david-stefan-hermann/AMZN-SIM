@@ -16,7 +16,8 @@ namespace Code.Scripts
 
         private void Start()
         {
-            _playerCollider = GetComponentInChildren<Collider>();
+            // Get the collider from the child object named "Capsule"
+            _playerCollider = transform.Find("Capsule").GetComponent<Collider>();
         }
 
         private void Update()
@@ -97,10 +98,8 @@ namespace Code.Scripts
                         _carriedPackage.transform.SetParent(carryPosition);
                         _carriedPackage.transform.localPosition = Vector3.zero;
                         _carriedPackage.GetComponent<Rigidbody>().isKinematic = true;
+                        _carriedPackage.GetComponent<Collider>().enabled = false; // Disable the package's collider
                         tooltipText.enabled = false;
-
-                        // Ignore collision between the player and the carried package
-                        Physics.IgnoreCollision(_carriedPackage.GetComponent<Collider>(), _playerCollider, true);
                     }
                 }
             }
@@ -108,17 +107,17 @@ namespace Code.Scripts
 
         private void CarryPackage()
         {
-            _carriedPackage.transform.position = carryPosition.position;
+            // Smoothly update the package position to avoid physics interactions
+            _carriedPackage.transform.position = Vector3.Lerp(_carriedPackage.transform.position, carryPosition.position, Time.deltaTime * 10f);
         }
 
         private void ReleasePackage()
         {
-            // Re-enable collision between the player and the package
-            Physics.IgnoreCollision(_carriedPackage.GetComponent<Collider>(), _playerCollider, false);
+            _carriedPackage.GetComponent<Collider>().enabled = true; // Re-enable the package's collider
 
             _carriedPackage.Release();
             _carriedPackage.transform.SetParent(null);
-            Rigidbody rb = _carriedPackage.GetComponent<Rigidbody>();
+            var rb = _carriedPackage.GetComponent<Rigidbody>();
             rb.isKinematic = false;
             if (Camera.main) rb.AddForce(Camera.main.transform.forward * throwForce, ForceMode.VelocityChange);
             _carriedPackage = null;

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Code.Scripts
 {
@@ -97,6 +99,18 @@ namespace Code.Scripts
                 if (rb != null)
                 {
                     other.transform.SetParent(transform); // Set the parent to the conveyor belt
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Package"))
+            {
+                var rb = other.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    other.transform.SetParent(null);
                 }
             }
         }
