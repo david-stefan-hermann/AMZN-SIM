@@ -20,8 +20,9 @@ Switching to Copilot improved the workflow by a lot. The code is now more struct
 - Some sounds were modified with Audacity.
 - Package Collision Sound: [pixabay.com](https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=65573)
 - Package Drop and Pickup Sound: [pixabay.com](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6317)
-  FREE Casual Game SFX Pack by Dustyroom Asset Store
-- Free UI Click Sound Pack by SwishSwoosh Asset Store
+- Earn Money Sound: [pixabay.com](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=89563)
+- FREE Casual Game SFX Pack by Dustyroom from the Unity Asset Store
+- Free UI Click Sound Pack by SwishSwoosh from the Unity Asset Store
 
 ## FPS Controller
 - The FPS Controller is a free asset from Unity from the Unity Asset Store.
