@@ -101,6 +101,7 @@ MonoBehaviour:
   pickupSound: {fileID: 8300000, guid: ca4b3f42f7cc6694390d020e37a3fbf4, type: 3}
   dropSound: {fileID: 8300000, guid: 8527a9caa296e2542a8f9984be707c06, type: 3}
   collisionSound: {fileID: 8300000, guid: f7f07931fc3c7b244b4d900d5ddac058, type: 3}
+  collisionSoundCooldown: 0.3
 --- !u!65 &-1835366553419677692
 BoxCollider:
   m_ObjectHideFlags: 0

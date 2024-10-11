@@ -88,5 +88,17 @@ namespace Code.Scripts
         {
             _nextSpawnTime = Time.time + Random.Range(minSpawnInterval, maxSpawnInterval);
         }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Package"))
+            {
+                var rb = other.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    other.transform.SetParent(transform); // Set the parent to the conveyor belt
+                }
+            }
+        }
     }
 }

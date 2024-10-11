@@ -20,7 +20,6 @@ namespace Code.Scripts
         private AudioSource _audioSource;
         private float _lastCollisionSoundTime; // Time when the last collision sound was played
 
-
         private void Start()
         {
             // Packages will start without a Rigidbody to save on unnecessary physics calculations
@@ -38,33 +37,27 @@ namespace Code.Scripts
             _lastPosition = transform.position;
 
             // Initialize the AudioSource
-            _audioSource = GetComponent<AudioSource>(); // Add this line
+            _audioSource = GetComponent<AudioSource>();
         }
 
         // This function is called when the player picks up the package
         public void Pickup()
         {
-            _rb.isKinematic = false; // Enable physics when picked up
+            _rb.isKinematic = true; // Disable physics when picked up
             PlaySound(pickupSound); // Play pickup sound
         }
-        
+
         // This function is called when the package is released
         public void Release()
         {
+            _rb.isKinematic = false; // Enable physics when dropped
             PlaySound(dropSound); // Play drop sound
         }
 
         // This function updates the material based on the damage status
         private void UpdateMaterial()
         {
-            if (isDamaged)
-            {
-                _renderer.material = damagedMaterial;
-            }
-            else
-            {
-                _renderer.material = normalMaterial;
-            }
+            _renderer.material = isDamaged ? damagedMaterial : normalMaterial;
         }
 
         private void Update()
@@ -94,11 +87,13 @@ namespace Code.Scripts
                 Destroy(gameObject);
             }
         }
-        
+
         private void OnCollisionEnter(Collision collision)
         {
             // Check if enough time has passed since the last collision sound
             if (!(Time.time >= _lastCollisionSoundTime + collisionSoundCooldown)) return;
+            // Check if the package is moving
+            if (!(_rb.linearVelocity.magnitude > 0.1f)) return;
             PlaySound(collisionSound); // Play collision sound
             _lastCollisionSoundTime = Time.time; // Update the last collision sound time
         }
