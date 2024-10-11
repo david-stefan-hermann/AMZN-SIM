@@ -104,6 +104,7 @@ namespace Code.Scripts
 
         private void ReleasePackage()
         {
+            _carriedPackage.Release();
             _carriedPackage.transform.SetParent(null);
             Rigidbody rb = _carriedPackage.GetComponent<Rigidbody>();
             rb.isKinematic = false;

@@ -11,8 +11,13 @@ namespace Code.Scripts
         public Transform decorationsHolder;
         public GameObject decorationButtonPrefab;
         public Transform decorationListContent;
+        public AudioClip openUISound;
+        public AudioClip closeUISound;
+        public AudioClip purchaseSuccessSound; // Sound to play when an item is successfully purchased
+        public AudioClip insufficientFundsSound; // Sound to play when there are insufficient funds
 
         private FirstPersonController _firstPersonController;
+        private AudioSource _audioSource;
 
         private void Start()
         {
@@ -30,6 +35,9 @@ namespace Code.Scripts
 
             // Close the UI panel at the start
             CloseUI();
+
+            // Initialize the AudioSource
+            _audioSource = GetComponent<AudioSource>(); // Add this line
         }
 
         private void Update()
@@ -50,6 +58,12 @@ namespace Code.Scripts
 
             Cursor.lockState = CursorLockMode.None; // Unlock the cursor
             Cursor.visible = true; // Show the cursor
+
+            // Play the open UI sound
+            if (openUISound && _audioSource) // Add this block
+            {
+                _audioSource.PlayOneShot(openUISound);
+            }
         }
 
         public void CloseUI()
@@ -62,6 +76,12 @@ namespace Code.Scripts
 
             Cursor.lockState = CursorLockMode.Locked; // Lock the cursor
             Cursor.visible = false; // Hide the cursor
+            
+            // Play the close UI sound
+            if (closeUISound && _audioSource) // Add this block
+            {
+                _audioSource.PlayOneShot(closeUISound);
+            }
         }
 
         private void PopulateDecorationList()
@@ -104,11 +124,24 @@ namespace Code.Scripts
                 item.gameObject.SetActive(true);
                 GameController.Instance.UpdateMoneyText();
                 UpdateDecorationButton(item); // Update only the purchased item
+
+                // Play purchase success sound
+                if (purchaseSuccessSound != null && _audioSource != null)
+                {
+                    _audioSource.PlayOneShot(purchaseSuccessSound);
+                }
             }
             else
             {
                 StartCoroutine(DisplayInsufficientFundsMessage(buttonScript));
+
+                // Play insufficient funds sound
+                if (insufficientFundsSound != null && _audioSource != null)
+                {
+                    _audioSource.PlayOneShot(insufficientFundsSound);
+                }
             }
+            
         }
 
         private static IEnumerator DisplayInsufficientFundsMessage(DecorationButton buttonScript)

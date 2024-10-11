@@ -8,11 +8,18 @@ namespace Code.Scripts
         public Material damagedMaterial; // Material to use if the package is damaged
         public Material normalMaterial; // Material to use if the package is not damaged
         public float destroyTime = 30f; // Time in seconds before the package is destroyed if not moved
+        public AudioClip pickupSound; // Sound to play when the package is picked up
+        public AudioClip dropSound; // Sound to play when the package is dropped
+        public AudioClip collisionSound; // Sound to play when the package collides with something
+        public float collisionSoundCooldown = 0.5f; // Cooldown time in seconds for collision sound
 
         private Rigidbody _rb;
         private Renderer _renderer;
         private float _timer;
         private Vector3 _lastPosition;
+        private AudioSource _audioSource;
+        private float _lastCollisionSoundTime; // Time when the last collision sound was played
+
 
         private void Start()
         {
@@ -29,12 +36,22 @@ namespace Code.Scripts
             // Initialize timer and last position
             _timer = destroyTime;
             _lastPosition = transform.position;
+
+            // Initialize the AudioSource
+            _audioSource = GetComponent<AudioSource>(); // Add this line
         }
 
         // This function is called when the player picks up the package
         public void Pickup()
         {
             _rb.isKinematic = false; // Enable physics when picked up
+            PlaySound(pickupSound); // Play pickup sound
+        }
+        
+        // This function is called when the package is released
+        public void Release()
+        {
+            PlaySound(dropSound); // Play drop sound
         }
 
         // This function updates the material based on the damage status
@@ -75,6 +92,23 @@ namespace Code.Scripts
             if (transform.position.y < -10f)
             {
                 Destroy(gameObject);
+            }
+        }
+        
+        private void OnCollisionEnter(Collision collision)
+        {
+            // Check if enough time has passed since the last collision sound
+            if (!(Time.time >= _lastCollisionSoundTime + collisionSoundCooldown)) return;
+            PlaySound(collisionSound); // Play collision sound
+            _lastCollisionSoundTime = Time.time; // Update the last collision sound time
+        }
+
+        // This function plays the given sound
+        private void PlaySound(AudioClip clip)
+        {
+            if (clip && _audioSource)
+            {
+                _audioSource.PlayOneShot(clip);
             }
         }
     }
