@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using StarterAssets;
@@ -15,7 +16,7 @@ namespace Code.Scripts
         public AudioClip closeUISound;
         public AudioClip purchaseSuccessSound; // Sound to play when an item is successfully purchased
         public AudioClip insufficientFundsSound; // Sound to play when there are insufficient funds
-
+        
         private FirstPersonController _firstPersonController;
         private AudioSource _audioSource;
 
@@ -153,6 +154,11 @@ namespace Code.Scripts
             {
                 buttonScript.HideInsufficientFunds();
             }
+        }
+        
+        public bool UIIsVisible()
+        {
+            return uiPanel.activeSelf;
         }
     }
 }

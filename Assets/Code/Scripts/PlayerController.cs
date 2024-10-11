@@ -66,6 +66,7 @@ namespace Code.Scripts
 
                         if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                         {
+                            if (homePC.UIIsVisible()) return;
                             homePC.OpenUI();
                         }
                     }

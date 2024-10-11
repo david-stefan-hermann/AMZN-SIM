@@ -23,9 +23,9 @@ namespace Code.Scripts
 
             decorationNameText.text = item.name;
             priceText.text = $"${item.price}";
-            
+
             insufficientFundsImage.gameObject.SetActive(false);
-            
+
             if (item.isOwned)
             {
                 buyButton.gameObject.SetActive(false);
@@ -51,9 +51,37 @@ namespace Code.Scripts
 
         private Sprite GenerateSpriteFrom3DObject(GameObject obj)
         {
-            // Implement your method to generate a sprite from a 3D object
-            // This is a placeholder implementation
-            return null;
+            // Create a temporary camera
+            GameObject tempCameraObj = new GameObject("TempCamera");
+            Camera tempCamera = tempCameraObj.AddComponent<Camera>();
+            tempCamera.backgroundColor = Color.clear;
+            tempCamera.clearFlags = CameraClearFlags.SolidColor;
+
+            // Create a RenderTexture
+            RenderTexture renderTexture = new RenderTexture(256, 256, 24);
+            tempCamera.targetTexture = renderTexture;
+
+            // Position the camera
+            tempCamera.transform.position = obj.transform.position + new Vector3(0, 0, -5);
+            tempCamera.transform.LookAt(obj.transform);
+
+            // Render the object
+            tempCamera.Render();
+
+            // Convert RenderTexture to Texture2D
+            RenderTexture.active = renderTexture;
+            Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
+            texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            texture.Apply();
+
+            // Clean up
+            RenderTexture.active = null;
+            tempCamera.targetTexture = null;
+            Destroy(tempCameraObj);
+            Destroy(renderTexture);
+
+            // Create a sprite from the Texture2D
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
 
         public void ShowInsufficientFunds()
@@ -67,7 +95,7 @@ namespace Code.Scripts
             buyButton.gameObject.SetActive(true);
             insufficientFundsImage.gameObject.SetActive(false);
         }
-        
+
         public DecorationItem GetDecorationItem()
         {
             return _decorationItem;
