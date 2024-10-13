@@ -28,3 +28,6 @@ Switching to Copilot improved the workflow by a lot. The code is now more struct
 ## FPS Controller
 - The FPS Controller is a free asset from Unity from the Unity Asset Store.
 - I added a script to the FPS Controller, which allows the player to pick up and place the packages.
+
+## Environment
+- HDRI from [hdri-haven.com](https://hdri-haven.com/hdri/desert-nature-reserve)
