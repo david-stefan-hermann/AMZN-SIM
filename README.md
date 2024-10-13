@@ -23,6 +23,7 @@ Switching to Copilot improved the workflow by a lot. The code is now more struct
 - Earn Money Sound: [pixabay.com](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=89563)
 - FREE Casual Game SFX Pack by Dustyroom from the Unity Asset Store
 - Free UI Click Sound Pack by SwishSwoosh from the Unity Asset Store
+- Sliding Door Sound: [pixabay.com](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=80832)
 
 ## FPS Controller
 - The FPS Controller is a free asset from Unity from the Unity Asset Store.
