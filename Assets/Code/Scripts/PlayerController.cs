@@ -6,8 +6,9 @@ namespace Code.Scripts
     public class PlayerController : MonoBehaviour
     {
         public float interactDistance = 3f; // Distance within which the player can interact with packages
-        public TextMeshProUGUI tooltipText; // Reference to the TextMeshProUGUI element for the tooltip
+        public TextMeshProUGUI packageTooltipText; // Reference to the TextMeshProUGUI element for the tooltip
         public TextMeshProUGUI pcTooltipText; // Reference to the TextMeshProUGUI element for the PC tooltip
+        public TextMeshProUGUI doorTooltipText; // Reference to the TextMeshProUGUI element for the Door tooltip
         public Transform carryPosition; // Position in front of the player where the package will be carried
         public float throwForce = 10f; // Force with which the package is thrown
 
@@ -51,18 +52,17 @@ namespace Code.Scripts
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
                 {
-                    PackageBox package = hit.transform.GetComponent<PackageBox>();
-                    HomePC homePC = hit.transform.GetComponent<HomePC>();
+                    var package = hit.transform.GetComponent<PackageBox>();
+                    var homePC = hit.transform.GetComponent<HomePC>();
+                    var door = hit.transform.GetComponent<DoorController>();
 
                     if (package)
                     {
-                        tooltipText.enabled = true;
-                        pcTooltipText.enabled = false;
+                        ShowTooltip(packageTooltipText);
                     }
                     else if (homePC)
                     {
-                        pcTooltipText.enabled = true;
-                        tooltipText.enabled = false;
+                        ShowTooltip(pcTooltipText);
 
                         if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                         {
@@ -70,20 +70,39 @@ namespace Code.Scripts
                             homePC.OpenUI();
                         }
                     }
+                    else if (door)
+                    {
+                        ShowTooltip(doorTooltipText);
+                        
+                        if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
+                        {
+                            door.ToggleDoor();
+                        }
+                    }
                     else
                     {
-                        tooltipText.enabled = false;
-                        pcTooltipText.enabled = false;
+                        ShowTooltip();
                     }
                 }
                 else
                 {
-                    tooltipText.enabled = false;
-                    pcTooltipText.enabled = false;
+                    ShowTooltip();
                 }
             }
         }
 
+        private void ShowTooltip()
+        {
+            packageTooltipText.enabled = false;
+            pcTooltipText.enabled = false;
+            doorTooltipText.enabled = false;
+        }
+        private void ShowTooltip(TextMeshProUGUI toolTip)
+        {
+            ShowTooltip();
+            toolTip.enabled = true;
+        }
+        
         private void TryPickupPackage()
         {
             if (Camera.main)
@@ -100,7 +119,7 @@ namespace Code.Scripts
                         _carriedPackage.transform.localPosition = Vector3.zero;
                         _carriedPackage.GetComponent<Rigidbody>().isKinematic = true;
                         _carriedPackage.GetComponent<Collider>().enabled = false; // Disable the package's collider
-                        tooltipText.enabled = false;
+                        ShowTooltip();
                     }
                 }
             }
